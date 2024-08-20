@@ -5,66 +5,59 @@
 <section
   class="flex justify-center border flex-col border-gray-700 rounded-lg shadow p-6 text-center"
 >
-  <div class="text-sm uppercase font-bold text-gray-500 mb-6">
-    Paste an Amazon Affiliate Link and click 'Remove'
-  </div>
-
-  <form>
+  <form id="form">
     <label for="search" class="mb-2 text-sm font-medium text-white sr-only">Search</label>
     <div class="relative">
       <input
         type="search"
-        id="search"
+        id="search-bar"
         class="block w-full p-4 text-sm border rounded-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-        placeholder="Paste link here"
+        placeholder="Enter link here"
         required
       />
       <button
-        type="submit"
-        class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 hover:bg-blue-700 focus:ring-blue-800"
+      id="remove-button"
+        type="button"
+        class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 focus:ring-4 focus:outline-none font-medium rounded-lg transition-all ease-in-out duration-500 text-sm px-4 py-2 dark:bg-blue-600 hover:bg-blue-500"
         >Remove!</button
       >
     </div>
   </form>
-
-  <article class="my-10">asdasd</article>
 </section>
 
 <div class="flex justify-between mt-3 font-extrabold mx-4">
-  <div><a href="https://www.jgcarrillo.com/" target="_blank">jgcarrillo</a> © 2024</div>
-  <div>
+  <div class="transition-all ease-in-out duration-500 hover:opacity-75"><a href="https://www.jgcarrillo.com/" target="_blank">jgcarrillo © 2024</a></div>
+  <div class="transition-all ease-in-out duration-500 hover:opacity-75 cursor">
     <a href="https://github.com/jgcarrillo/" target="_blank">GitHub</a>
   </div>
 </div>
 
 <script>
-  function cleanAmazonAffiliateUrl(url: string) {
-    // Crear una URL válida
-    const parsedUrl = new URL(url);
+  const form = document.querySelector('#form')
+  const searchbar = document.querySelector('#search-bar') as HTMLInputElement
+  const removeButton = document.querySelector('#remove-button')
 
-    // Extraer el pathname de la URL
+  removeButton?.addEventListener('click', () => {
+    const $cleanURLContainer = document.createElement('div')
+     $cleanURLContainer.setAttribute('id', 'clean-url-container')
+     $cleanURLContainer.classList.add('my-10')
+
+    const parsedUrl = new URL(searchbar.value);
+
     const pathname = parsedUrl.pathname;
 
-    // Comprobar si el pathname contiene '/product/' o '/dp/'
-    let productId = '';
+    let productId:string|null = '';
     if (pathname.includes('/product/')) {
       productId = pathname.split('/product/')[1].split('/')[0];
     } else if (pathname.includes('/dp/')) {
       productId = pathname.split('/dp/')[1].split('/')[0];
     } else {
-      return null; // Si la URL no contiene un ID de producto, retornar null
+    productId = null
     }
 
-    // Construir la URL limpia del producto
-    const cleanUrl = `https://www.amazon.es/dp/${productId}`;
-    return cleanUrl;
-  }
+    $cleanURLContainer.textContent = `https://www.amazon.es/dp/${productId}`;
+    form?.appendChild($cleanURLContainer)
 
-  // Ejemplo de uso:
-  const affiliateUrl1 =
-    'https://www.amazon.es/gp/product/B000SM762A/ref=as_li_tl?ie=UTF8&camp=3638&creative=24630&creativeASIN=B000SM762A&linkCode=as2&tag=diegodoal00-21&linkId=c7691dd0be20e4a56ae781c03b5dec02';
-  const affiliateUrl2 =
-    'https://www.amazon.es/dp/B00US0G54M?linkCode=ssc&tag=onamzmejorrob-21&creativeASIN=B00US0G54M&asc_item-id=amzn1.ideas.1Y9SR6LURHELM&ref_=aip_sf_list_spv_ofs_mixed_d_asin&th=1';
-
-  console.log(cleanAmazonAffiliateUrl(affiliateUrl1)); // Output: https://www.amazon.es/dp/B000SM762A
+    searchbar.value = ''
+  })
 </script>

@@ -6,7 +6,9 @@
   class="flex justify-center border flex-col border-gray-700 rounded-lg shadow p-6 text-center"
 >
   <form id="form">
-    <label for="search" class="mb-2 text-sm font-medium text-white sr-only">Search</label>
+    <label for="search" class="mb-2 text-sm font-medium text-white sr-only"
+      >Search</label
+    >
     <div class="relative">
       <input
         type="search"
@@ -16,17 +18,19 @@
         required
       />
       <button
-      id="remove-button"
+        id="remove-button"
         type="button"
         class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 focus:ring-4 focus:outline-none font-medium rounded-lg transition-all ease-in-out duration-500 text-sm px-4 py-2 dark:bg-blue-600 hover:bg-blue-500"
-        >Remove!</button
+        >Generate</button
       >
     </div>
   </form>
 </section>
 
 <div class="flex justify-between mt-3 font-extrabold mx-4">
-  <div class="transition-all ease-in-out duration-500 hover:opacity-75"><a href="https://www.jgcarrillo.com/" target="_blank">jgcarrillo © 2024</a></div>
+  <div class="transition-all ease-in-out duration-500 hover:opacity-75">
+    <a href="https://www.jgcarrillo.com/" target="_blank">jgcarrillo © 2024</a>
+  </div>
   <div class="transition-all ease-in-out duration-500 hover:opacity-75 cursor">
     <a href="https://github.com/jgcarrillo/" target="_blank">GitHub</a>
   </div>
@@ -36,28 +40,90 @@
   const form = document.querySelector('#form')
   const searchbar = document.querySelector('#search-bar') as HTMLInputElement
   const removeButton = document.querySelector('#remove-button')
+  const $cleanURLContainer = document.createElement('div')
 
   removeButton?.addEventListener('click', () => {
-    const $cleanURLContainer = document.createElement('div')
-     $cleanURLContainer.setAttribute('id', 'clean-url-container')
-     $cleanURLContainer.classList.add('my-10')
+    $cleanURLContainer.setAttribute('id', 'clean-url-container')
+    $cleanURLContainer.className = ''
+    $cleanURLContainer.classList.add('my-8')
 
-    const parsedUrl = new URL(searchbar.value);
+    try {
+      const parsedUrl = new URL(searchbar.value)
 
-    const pathname = parsedUrl.pathname;
+      const pathname = parsedUrl.pathname
 
-    let productId:string|null = '';
-    if (pathname.includes('/product/')) {
-      productId = pathname.split('/product/')[1].split('/')[0];
-    } else if (pathname.includes('/dp/')) {
-      productId = pathname.split('/dp/')[1].split('/')[0];
-    } else {
-    productId = null
+      let productId: string | null = ''
+      if (pathname.includes('/product/')) {
+        productId = pathname.split('/product/')[1].split('/')[0]
+      } else if (pathname.includes('/dp/')) {
+        productId = pathname.split('/dp/')[1].split('/')[0]
+      } else {
+        productId = null
+      }
+
+      $cleanURLContainer.classList.add('grid', 'grid-cols-8', 'gap-2', 'w-full')
+      $cleanURLContainer.innerHTML = `
+        <span id="clipboard" class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">https://www.amazon.es/dp/${productId}</span>
+        <button type="button" id="copy-button" class="col-span-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center items-center inline-flex justify-center">
+        <span id="default-message">Copy</span>
+        <span id="success-message" class="hidden inline-flex items-center">
+            <svg class="w-3 h-3 text-white me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
+            </svg>
+            Copied!
+        </span>
+    </button>
+      `
+
+      const $copyButton = $cleanURLContainer.querySelector('button')
+      const AmazonURLWithoutAffiliateLink =
+        $cleanURLContainer.querySelector('span')?.textContent
+      const $defaultMessage = $cleanURLContainer.querySelector(
+        'button span:nth-child(1)',
+      )
+      const $successMessage = $cleanURLContainer.querySelector(
+        'button span:nth-child(2)',
+      )
+
+      $copyButton?.addEventListener('click', async () => {
+        if (
+          AmazonURLWithoutAffiliateLink &&
+          $defaultMessage &&
+          $successMessage
+        ) {
+          await navigator.clipboard.writeText(AmazonURLWithoutAffiliateLink)
+
+          $defaultMessage.classList.add('hidden')
+          $successMessage.classList.remove('hidden')
+
+          setTimeout(() => {
+            $defaultMessage.classList.remove('hidden')
+            $successMessage.classList.add('hidden')
+          }, 2000)
+        }
+      })
+    } catch (error: any) {
+      if (error.name === 'TypeError') {
+        $cleanURLContainer.setAttribute('role', 'alert')
+        $cleanURLContainer.className = ''
+        $cleanURLContainer.classList.add(
+          'my-8',
+          'p-4',
+          'text-yellow-300',
+          'rounded-lg',
+          'bg-gray-800',
+        )
+        $cleanURLContainer.innerHTML = `
+          <span class="font-medium">Invalid URL: ${searchbar.value}</span>
+        `
+      } else {
+        console.error(`Unknown error: ${error}`)
+      }
+    } finally {
+      form?.appendChild($cleanURLContainer)
+      searchbar.value = ''
     }
-
-    $cleanURLContainer.textContent = `https://www.amazon.es/dp/${productId}`;
-    form?.appendChild($cleanURLContainer)
-
-    searchbar.value = ''
   })
+
+  // https://www.amazon.es/gp/product/B000SM762A/ref=as_li_tl?ie=UTF8&camp=3638&creative=24630&creativeASIN=B000SM762A&linkCode=as2&tag=diegodoal00-21&linkId=c7691dd0be20e4a56ae781c03b5dec02
 </script>

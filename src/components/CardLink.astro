@@ -42,6 +42,10 @@
   const removeButton = document.querySelector('#remove-button')
   const $cleanURLContainer = document.createElement('div')
 
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault()
+  })
+
   removeButton?.addEventListener('click', () => {
     $cleanURLContainer.setAttribute('id', 'clean-url-container')
     $cleanURLContainer.className = ''
@@ -63,7 +67,7 @@
 
       $cleanURLContainer.classList.add('grid', 'grid-cols-8', 'gap-2', 'w-full')
       $cleanURLContainer.innerHTML = `
-        <span id="clipboard" class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">https://www.amazon.es/dp/${productId}</span>
+        <a id="clipboard" href="https://www.amazon.es/dp/${productId}" alt="Amazon link" target="_blank" class="col-span-6 bg-gray-50 border border-gray-300 rounded-lg font-medium text-blue-500 hover:underline block w-full p-2.5">https://www.amazon.es/dp/${productId}</a>
         <button type="button" id="copy-button" class="col-span-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center items-center inline-flex justify-center">
         <span id="default-message">Copy</span>
         <span id="success-message" class="hidden inline-flex items-center">
@@ -77,7 +81,7 @@
 
       const $copyButton = $cleanURLContainer.querySelector('button')
       const AmazonURLWithoutAffiliateLink =
-        $cleanURLContainer.querySelector('span')?.textContent
+        $cleanURLContainer.querySelector('a')?.textContent
       const $defaultMessage = $cleanURLContainer.querySelector(
         'button span:nth-child(1)',
       )

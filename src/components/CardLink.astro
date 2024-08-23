@@ -70,7 +70,7 @@
 
       $cleanURLContainer.classList.add('grid', 'grid-cols-8', 'gap-2', 'w-full')
       $cleanURLContainer.innerHTML = `
-        <a id="clipboard" href="https://www.amazon.es/dp/${productId}" alt="Amazon link" target="_blank" class="col-span-6 bg-gray-50 border border-gray-300 rounded-lg font-medium text-blue-500 hover:underline block w-full p-2.5">https://www.amazon.es/dp/${productId}</a>
+        <a id="clipboard" href="https://www.amazon.es/dp/${productId}" alt="Amazon link" target="_blank" class="flex justify-center items-center col-span-6 bg-gray-50 border border-gray-300 text-[10px] md:text-base rounded-lg font-medium text-blue-500 hover:underline block w-full p-2.5">https://www.amazon.es/dp/${productId}</a>
         <button type="button" id="copy-button" class="col-span-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto py-2.5 text-center items-center inline-flex justify-center">
         <span id="default-message">Copy</span>
         <span id="success-message" class="hidden inline-flex items-center">
